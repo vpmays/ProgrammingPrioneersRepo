@@ -20,7 +20,7 @@ def login():
                 login_user(user, remember=True)
                 return redirect(url_for('views.home'))
             else:
-                flash('Incorrect password. Please try again.', category='error')
+                flash('Incorrect password. Please try again...', category='error')
         else:
             flash('Email does not exist.', catergory='error')
             
