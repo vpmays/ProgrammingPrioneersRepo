@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title%}Sign Up{% endblock %}
+
+{% block content %}
+    <!-- build hmtl form for getting user login data -->
+    <!-- set moethod to post to sned info to backend -->
+    <form method="POST">
+        <!-- Create title for form -->
+        <h3 align="center">Sign Up</h3>
+        <!-- create username input field -->
+        <div class="form-group">
+            <label for="username">Eneter username</label>
+            <!-- the 'name' veriable is critical as it allows us to use the entered info on the backend -->
+            <input type="text" 
+            class="form-control" 
+            id="username" 
+            name="username" 
+            placeholder="username"/>
+        </div>
+        <!-- create email input field -->
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <!-- the 'name' veriable is critical as it allows us to use the entered info on the backend -->
+            <input type="email" 
+            class="form-control" 
+            id="email" 
+            name="email" 
+            placeholder="Enter email"/>
+        </div>
+        <!-- create password1 input field -->
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <!-- the 'name' veriable is critical as it allows us to use the entered info on the backend -->
+            <input type="password" 
+            class="form-control" 
+            id="password1" 
+            name="password1" 
+            placeholder="Enter password"/>
+        </div>
+        <!-- create password2 input field -->
+        <div class="form-group">
+            <label for="password2">Confirm Password</label>
+            <!-- the 'name' veriable is critical as it allows us to use the entered info on the backend -->
+            <input type="password" 
+            class="form-control" 
+            id="password2" 
+            name="password2" 
+            placeholder="Confirm password"/>
+        </div>
+        <br/>
+        <!-- create pretty submit button -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}

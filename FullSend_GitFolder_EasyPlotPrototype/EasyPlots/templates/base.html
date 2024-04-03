@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- These two links give us access to a buunch of css stuff to make the syling easy -->
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+    crossorigin="anonymous"/>
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    crossorigin="anonymous"/>
+
+    <!-- these three scripts give us all the javascript needed for our bootstrap css stuff -->
+    <script
+    src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"
+    ></script>
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"
+    ></script>
+    <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"
+    ></script>
+
+    <!-- This linnk and script allows us to run pyscript if we want to try that (not currently using) -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <!-- 
+        Could include this to bring in javaScript files from our static folder:
+
+        <script 
+        type = "text/javascrpt" 
+        src = "{{ url_for('static', filename = 'index.js') }}"  
+        ></script>
+
+        The url_for() is a python function, see ~29:40
+    -->
+
+    <!-- The double squiggle brackets and doubl percent signs contains python code, in this case it's a block. These blocks will be overwritten 
+    by our other html files if they are defined within them, see video ~27:00 -->
+    <title>{% block title %}Home{% endblock %}</title>
+
+</head>
+<body>
+    <!-- navbar, implements some bootstrap class navbar-expand-lg -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <!-- put buttons on nav bar -->
+        <!-- gives us a toggling nav bar -->
+        <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbar">
+            <!-- gives us the icon we want inside the button tag -->
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- gives us collapsable nav bar and all needed buttons-->
+        <div class="collapse navbar-collapse" id="navbar">
+            <div class="navbar-nav">
+                <!-- use python to make what the navbar displays conditional on f user is logged in -->
+                {% if user.is_authenticated %}
+                    <!-- the href gets us to the html we want -->
+                    <a class="nav-item nav-link" id="home" href="/">Notes</a>
+                    <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+                {% else %}
+                    <a class="nav-item nav-link" id="login" href="/login">Login</a>
+                    <a class="nav-item nav-link" id="signUp" href="/sign_up">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- create buttons to flach to user for messages you need to send them. 
+        These messages are created in .py files for example with flash(). 
+        Since these are in base template, it will work for all web pages. -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- check for messages and loop through if they exist -->
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'error' %}
+                    <div class="alert alert-danger alert-dismissable fade show" role="alert">
+                        <!-- display message inside of dismissable button -->
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span aria-hidden="True">&times;</span>
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success alert-dismissable fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span aria-hidden="True">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- This div with block inside is where we will overide with html from .html file for the respective page-->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- used for calling javascript code -->
+    {% block javascript %}
+        <script type="text/javascript">
+            function deleteNote(noteId) {
+            fetch("/delete-note", {
+                method: "POST",
+                body: JSON.stringify({ noteId: noteId }),
+            }).then((_res) => {
+                window.location.href = "/";});
+            }
+        </script>
+    {% endblock %}
+</body>
+</html>
