@@ -32,9 +32,13 @@
     crossorigin="anonymous"
     ></script>
 
-    <!-- This linnk and script allows us to run pyscript if we want to try that (not currently using) -->
+    <!-- Allos us to have a pretty dropbox and progress bar for file upload -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+
+    <!-- This linnk and script allows us to run pyscript if we want to try that (not currently using) 
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    -->
 
     <!-- 
         Could include this to bring in javaScript files from our static folder:
@@ -72,7 +76,8 @@
                 <!-- use python to make what the navbar displays conditional on f user is logged in -->
                 {% if user.is_authenticated %}
                     <!-- the href gets us to the html we want -->
-                    <a class="nav-item nav-link" id="home" href="/">Notes</a>
+                    <a class="nav-item nav-link" id="home" href="/">EasyPlot</a>
+                    <a class="nav-item nav-link" id="upload" href="/upload">UploadCSV</a>
                     <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
                 {% else %}
                     <a class="nav-item nav-link" id="login" href="/login">Login</a>

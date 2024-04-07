@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title%}
+    CSV Upload
+{% endblock %}
+
+{% block content %}
+
+    <body>
+        <h1>File Upload</h1>
+        <!--- Gives us an input button to browse computer for file and submit button-->
+        
+        <form method="POST" action="" enctype="multipart/form-data">
+            <p><input type="file" name="file"></p>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    
+        <!-- Gives us a dropbox to drop files into and a progress bar while file is uploading -->
+        <!--
+        <form action="{{ url_for('views.upload') }}" class="dropzone">
+        </form>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+    -->
+    </body>
+
+{% endblock %}
