@@ -28,7 +28,7 @@ def login():
                 #login user
                 login_user(user, remember=True)
                 #redirect user to home page
-                return redirect(url_for('views.home'))
+                return redirect(url_for('views.upload'))
             # if incorrect password, flash message to user
             else:
                 flash('Incorrect password. Please try again.', category='error')
@@ -78,6 +78,6 @@ def signUp():
             # once user is cerate, login the user, remember the user is logged in, and relay login message to user
             login_user(new_user, remember=True)
             flash('Your account has been created!', category='success')
-            return redirect(url_for('views.home')) #redirect ot views.home, which starts you back at @views.route('/', methods=['GET', 'POST']) and has the function name 'home'
+            return redirect(url_for('views.upload')) #redirect ot views.home, which starts you back at @views.route('/', methods=['GET', 'POST']) and has the function name 'home'
 
     return render_template("sign_up.html", user=current_user) #render/display the sign_up.html page, must be in folder named templates to find it with this function

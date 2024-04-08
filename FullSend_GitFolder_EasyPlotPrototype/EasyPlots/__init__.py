@@ -19,7 +19,7 @@ def create_app():
     app.register_blueprint(views, url_prefix='/') #register the blueprint, the prefix of '/' just means no prefix video 18:26
     app.register_blueprint(auth, url_prefix='/') #register the blueprint, the prefix of '/' just means no prefix video 18:26
 
-    from .models import User, Note # import our two database tables, we don't actually use them but having this defines them before creating our db
+    from .models import User #, Note # import our two database tables, we don't actually use them but having this defines them before creating our db
 
     create_database(app)
     

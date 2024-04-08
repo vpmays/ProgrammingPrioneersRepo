@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for #import needed modules from flask
 from flask_login import login_required, current_user #anything on the user table can be accessed with current_user
-from .models import Note
+# from .models import Note
 from . import db
 import json
 from .pyPlot import pyPlot1, pyPlot2
@@ -71,6 +71,7 @@ def upload():
     
     return render_template("upload.html", user=current_user)
 
+'''
 #route for deleting notes. I'm thinking we won't need this for our code
 @views.route('/delete-note', methods=['POST'])
 def delete_note():
@@ -88,7 +89,8 @@ def delete_note():
             db.session.commit()
     
     return jsonify({}) #just return an empty response because flask requires us to return something 
-
+'''
+    
 @views.route('/pyPlot')
 def pyPlot():
     return render_template("pyPlot.html") #render/display the html page pyPlot.html, must be in folder named templates to find it with this function
