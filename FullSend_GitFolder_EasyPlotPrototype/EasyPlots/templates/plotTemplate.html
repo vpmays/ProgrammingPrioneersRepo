@@ -1,0 +1,49 @@
+<!-- extands the bas.html, overwrites bolcks with corresponding labels in base.html -->
+{% extends "base.html" %}
+{% block title%}
+    EasyPlot
+{% endblock %}
+
+{% block content %}
+    <h1 align="center">Choose Dataset</h1>
+<!--
+    <ul class="list-group list-group-flush" id="notes">
+         This allows us to loop through all notes in user.notes and display them 
+        {% for note in user.notes %}
+            <li class="list-group-item">
+                {{ note.data }}
+                 Deleteing the note is what we needed the javascript for
+                 the note.id is how we identify the note we need to delete 
+                <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
+--> 
+    <!-- Form to allow user to make notes -->
+    <!-- Using the name= part will allow us to make multiple fields here to plug variables into a plot -->
+    <form method='POST'>
+        <label for="dataString">Select Dataset:</label><br>
+        <select name="dataString" id="dataString" class="form-control">
+            {% for data in allUserData %}
+                <option value = "{{data.id, data.dataString}}">{{data.title}}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <br/>
+        <label for="useOrDelete">Use or Delete Dataset:</label><br>
+        <select name="useOrDelete" id="useOrDelete" class="form-control">
+            <option value = "useData">Use</option>
+            <option value = "deleteData">Delete</option> 
+        </select>
+        <!-- <textarea name="note" id="note" class="form-control" placeholder="Enter note here."></textarea> -->
+        <br/>
+        <br/>
+        <br/>
+        <div align="center" >
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+    
+{% endblock %}

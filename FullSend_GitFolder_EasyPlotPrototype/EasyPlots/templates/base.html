@@ -32,6 +32,8 @@
     crossorigin="anonymous"
     ></script>
 
+    <script src="index.js" defer></script>
+
     <!-- Allos us to have a pretty dropbox and progress bar for file upload -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
 
@@ -77,6 +79,7 @@
                 {% if user.is_authenticated %}
                     <!-- the href gets us to the html we want -->
                     <a class="nav-item nav-link" id="home" href="/">EasyPlot</a>
+                    <a class="nav-item nav-link" id="plotTemplate" href="/plotTemplate">ChooseData</a>
                     <a class="nav-item nav-link" id="upload" href="/upload">UploadCSV</a>
                     <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
                 {% else %}

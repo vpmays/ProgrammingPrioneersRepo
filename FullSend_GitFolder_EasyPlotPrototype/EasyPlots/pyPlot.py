@@ -2,35 +2,145 @@ import plotly.express as px
 from jinja2 import Template
 from matplotlib import pyplot as plt 
 import numpy as np 
+import os
 
 
-def pyPlot1(xdata=None, ydata=None, plotTitle='Main', xaxisTitle='x-axis', yaxisTitle='y-axis'):
-    if xdata == None:
-        xdata = ['default', 'defaul', 'default']
-    if ydata == None:
-        ydata = [3,2,1]
+def barPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
     
     fig = plt.figure()
     plt.bar(xdata, ydata)
+    plt.xticks(rotation = 45)
     plt.xlabel(xaxisTitle)
     plt.ylabel(yaxisTitle)
     plt.title(plotTitle)
-    
-    fig.savefig('EasyPlots/static/pyPlot.png')
+
+    fig.savefig('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/pyPlot.png', bbox_inches='tight')
 
 
-def pyPlot2(xdata=None, ydata=None, plotTitle='Main', xaxisTitle='x-axis', yaxisTitle='y-axis'):
+def linePlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
     
-    if xdata == None:
-        xdata = ['default', 'defaul', 'default']
-    if ydata == None:
-        ydata = [3,2,1]
-    
-    experience_dict = {}
-    experience_dict[xaxisTitle] = xdata
-    experience_dict[yaxisTitle] = ydata
-    
-    fig = px.bar(experience_dict, x=xaxisTitle, y=yaxisTitle, title=plotTitle)
+    fig = plt.figure()
+    plt.plot(xdata, ydata)
+    plt.xticks(rotation = 45)
+    plt.xlabel(xaxisTitle)
+    plt.ylabel(yaxisTitle)
+    plt.title(plotTitle)
 
-    fig.write_html("EasyPlots/templates/pyPlot.html")
+    fig.savefig('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/pyPlot.png', bbox_inches='tight')
 
+
+def dotPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
+    
+    fig = plt.figure()
+    plt.plot(xdata, ydata, 'bo')
+    plt.xticks(rotation = 45)
+    plt.xlabel(xaxisTitle)
+    plt.ylabel(yaxisTitle)
+    plt.title(plotTitle)
+
+    fig.savefig('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/pyPlot.png', bbox_inches='tight')
+
+
+def boxPlot(data, plotTitle, xaxisTitle, yaxisTitle):
+    
+    restructuredData = []
+
+    i = 0
+    for elem in range(len(data[0])):
+        miniList = []
+        for row in data[1:]:
+            miniList.append(float(row[i]))
+        restructuredData.append(miniList)
+        i += 1
+
+    fig = plt.figure()
+    plt.boxplot(restructuredData, patch_artist=True, labels=data[0])
+    plt.xticks(rotation = 45)
+    plt.xlabel(xaxisTitle)
+    plt.ylabel(yaxisTitle)
+    plt.title(plotTitle)
+
+    fig.savefig('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/pyPlot.png', bbox_inches='tight')
+
+
+def dotPlot(data, plotTitle, xaxisTitle, yaxisTitle):
+    
+    restructuredData = []
+
+    i = 0
+    for elem in range(len(data[0])):
+        miniList = []
+        for row in data[1:]:
+            miniList.append(float(row[i]))
+        restructuredData.append(miniList)
+        i += 1
+
+    ydata = []
+    for variable in restructuredData:
+        ydata.append(sum(variable)/len(variable))
+    
+    xdata = data[0]
+
+    fig = plt.figure()
+    plt.plot(xdata, ydata, 'bo')
+    plt.xticks(rotation = 45)
+    plt.xlabel(xaxisTitle)
+    plt.ylabel(yaxisTitle)
+    plt.title(plotTitle)
+
+    fig.savefig('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/pyPlot.png', bbox_inches='tight')
+
+
+def linePlot(data, plotTitle, xaxisTitle, yaxisTitle):
+
+    restructuredData = []
+
+    i = 0
+    for elem in range(len(data[0])):
+        miniList = []
+        for row in data[1:]:
+            miniList.append(float(row[i]))
+        restructuredData.append(miniList)
+        i += 1
+
+    ydata = []
+    for variable in restructuredData:
+        ydata.append(sum(variable)/len(variable))
+    
+    xdata = data[0]
+    
+    fig = plt.figure()
+    plt.plot(xdata, ydata)
+    plt.xticks(rotation = 45)
+    plt.xlabel(xaxisTitle)
+    plt.ylabel(yaxisTitle)
+    plt.title(plotTitle)
+
+    fig.savefig('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/pyPlot.png', bbox_inches='tight')
+
+def barPlot(data, plotTitle, xaxisTitle, yaxisTitle):
+    
+    restructuredData = []
+
+    i = 0
+    for elem in range(len(data[0])):
+        miniList = []
+        for row in data[1:]:
+            miniList.append(float(row[i]))
+        restructuredData.append(miniList)
+        i += 1
+
+    ydata = []
+    for variable in restructuredData:
+        ydata.append(sum(variable)/len(variable))
+    
+    xdata = data[0]
+
+    fig = plt.figure()
+    plt.bar(xdata, ydata)
+    plt.xticks(rotation = 45)
+    plt.xlabel(xaxisTitle)
+    plt.ylabel(yaxisTitle)
+    plt.title(plotTitle)
+
+    fig.savefig('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/pyPlot.png', bbox_inches='tight')

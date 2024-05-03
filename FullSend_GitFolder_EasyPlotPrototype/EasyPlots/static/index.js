@@ -10,3 +10,5 @@ function deleteNote(noteId) {
         window.location.href = "/";
     });
 }
+
+

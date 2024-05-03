@@ -24,18 +24,57 @@
     <!-- Form to allow user to make notes -->
     <!-- Using the name= part will allow us to make multiple fields here to plug variables into a plot -->
     <form method='POST'>
-        <textarea name="xdata" id="xdata" class="form-control" placeholder="Enter x-axis data."></textarea>
-        <textarea name="ydata" id="ydata" class="form-control" placeholder="Enter y-axis data."></textarea>
-        <textarea name="plotTitle" id="plotTitle" class="form-control" placeholder="Enter main title."></textarea>
-        <textarea name="xaxisTitle" id="xaxisTitle" class="form-control" placeholder="Enter x-axis title."></textarea>
-        <textarea name="yaxisTitle" id="yaxisTitle" class="form-control" placeholder="Enter y-axis title."></textarea>
+        <label for="dataStructure">How is your data structured?</label><br>
+        <select name="dataStructure" id="useOrDelete" class="form-control">
+            <option value = "oneXOneY">Each x variable has one numerical y value</option>
+            <option value = "oneXManyY">Each x variable has more than one numerical y value</option> 
+        </select>
+        <br/>
+        <label for="plotType">Select plot type:</label><br>
+        <select name="plotType" id="plotTemplates" class="form-control">
+            <option value = "barPlot">Bar Plot</option>
+            <option value = "boxPlot">Box Plot (only avaiable if answered "Each x variable has more than one numerical y value" above)</option>
+            <option value = "linePlot">Line Plot</option>
+            <option value = "dotPlot">Dot Plot</option>
+        </select>
+        <br/>
+        <!-- <textarea name="xdata" id="xdata" class="form-control" placeholder="Enter x-axis data."></textarea> -->
+        <label for="xdata1">X-axis variable group (only used if each x variable has only one numerical y value):</label>
+        <select name="xdata1" id="xdata1" class="form-control">
+            {% for element in userData[0] %}
+                <option value = "{{userData[0].index(element)}}">{{element}}</option>
+            {% endfor %}
+        </select>
+        <!-- <textarea name="ydata" id="ydata" class="form-control" placeholder="Enter y-axis data."></textarea> -->
+        <br/>
+        <label for="ydata1">Y-axis variable group (only used if each x variable has only one numerical y value):</label><br>
+        <select name="ydata1" id="ydata1" class="form-control">
+            {% for element in userData[0] %}
+                <option value = "{{userData[0].index(element)}}">{{element}}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <label for="plotTitle">Enter Plot Title:</label>
+        <textarea name="plotTitle" id="plotTitle" class="form-control" placeholder="My Ttile"></textarea>
+        <br/>
+        <label for="xaxisTitle">Enter x-axis Title:</label>
+        <textarea name="xaxisTitle" id="xaxisTitle" class="form-control" placeholder="My x-axis Title."></textarea>
+        <br/>
+        <label for="yaxisTitle">Enter y-axis Title:</label>
+        <textarea name="yaxisTitle" id="yaxisTitle" class="form-control" placeholder="My y-axis Title."></textarea>
         <!-- <textarea name="note" id="note" class="form-control" placeholder="Enter note here."></textarea> -->
         <br/>
         <div align="center" >
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
-    <center><img src="{{url_for('static', filename= 'pyPlot.png')}}" height = "500" width = "700"/></center>
-    <center><iframe src="{{url_for('views.pyPlot')}}" height = "500" width = "700"></iframe></center>
+    <br/>
+    <br/>
+    {% if buildPlot %}
+        <center><img src="{{url_for('static', filename= 'pyPlot.png')}}" height = "600" width = "800"/></center>
+        <!-- <center><iframe src="{{url_for('views.pyPlot')}}" height = "500" width = "700"></iframe></center> -->
+    {% endif %}
+    <br/>
+    <br/>
     
 {% endblock %}
