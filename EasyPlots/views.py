@@ -23,14 +23,23 @@ def home(): #when you hit route '/' (homepage) this function is called
     #if method is 'POST' when you hit the home page, get the note and check it, then store it in db
     if request.method == 'POST':
         isPostRequest = True
-        #get data
-        #xdata = request.form.get('xdata').split(',') #data comes back as string for now, so need ot split it by ','
-        #ydata_1 = request.form.get('ydata').split(',') #data comes back as string for now, so need ot split it by ','
+
+        #get data from html form
         dataStructure = request.form.get('dataStructure')
         plotType = request.form.get('plotType')
         xdata_index = int(request.form.get('xdata1')) #data comes back as string for now, so need ot 
         ydata_index = int(request.form.get('ydata1')) #data comes back as string for now, so need ot 
+        
+        plotTitle = request.form.get('plotTitle')
+        xaxisTitle = request.form.get('xaxisTitle')
+        yaxisTitle = request.form.get('yaxisTitle')
+
         stats = request.form.get('stats')
+        tTestSelection1_index = int(request.form.get('tTestSelection1'))
+        tTestSelection2_index = int(request.form.get('tTestSelection2'))
+
+        #make x and y data
+        # set up data based on structure and statistics choices
         xdata = []
         ydata = []
         if (dataStructure == 'oneXOneY' and stats == 'linearRegress'):
@@ -48,7 +57,6 @@ def home(): #when you hit route '/' (homepage) this function is called
                 flash('You must have at least two values for each variable in linear regression.', category='error')
                 buildPlot = False
                 return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
-
         elif (dataStructure == 'oneXOneY' and stats != 'linearRegress'):
             for row in data[1:]:
                 xdata.append(row[xdata_index])
@@ -58,11 +66,6 @@ def home(): #when you hit route '/' (homepage) this function is called
                     flash('y values must be real numbers.', category='error')
                     buildPlot = False
                     return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
-                
-            # if (stats == 'linearRegress'):
-            #     flash('You must select "Each x variable has more than one numerical y value" for linear regression.', category='error')
-            #     buildPlot = False
-            #     return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
         else:
             i = 1
             for row in data[1:]:
@@ -77,22 +80,13 @@ def home(): #when you hit route '/' (homepage) this function is called
                     j += 1
                 i += 1
 
-        
-        #convert numbers in string for y-axis to float values
-        # ydata = []
-        # for num in ydata_1:
-        #     ydata.append(float(num))
-        # #store plot titles
-        plotTitle = request.form.get('plotTitle')
-        xaxisTitle = request.form.get('xaxisTitle')
-        yaxisTitle = request.form.get('yaxisTitle')
-
-        tTestSelection1_index = int(request.form.get('tTestSelection1'))
-        tTestSelection2_index = int(request.form.get('tTestSelection2'))
+        #do additional checks needed for ttest and wilcoxon test
         if (tTestSelection2_index == tTestSelection1_index) and (stats == "wilcoxon" or stats == "tTest"):
             flash('You must compare two different variables.', category='error')
             buildPlot = False
             return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+        
+        #build ttest and wilcoxon test variables, make needed check along the way
         tTestSelection1 = []
         tTestSelection2 = []
         for row in data[1:]:
@@ -104,6 +98,8 @@ def home(): #when you hit route '/' (homepage) this function is called
                     flash('Variables for stats tests must be real numbers.', category='error')
                     buildPlot = False
                     return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+        
+        #check if dotPlot was chosen when doing linear regression
         if (stats == 'linearRegress'):
             if (plotType != "dotPlot"):
                 flash('You must use dot plot for linear regression.', category='error')
@@ -116,27 +112,7 @@ def home(): #when you hit route '/' (homepage) this function is called
                 return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
 
         
-        '''
-        note = request.form.get('note')
-        if len(note) < 1:
-            flash('Note must be at least 1 character.', category='error' )
-        else:
-            
-            new_note = Note(data=note, user_id=current_user.id)
-            #store note in db
-            db.session.add(new_note)
-            db.session.commit()
-            #notify user that note was stored
-            flash('Note added!', category='success')
-            #using date from note to plug into pyPlots. This is where we will pull in data from template plot form
-            
-            pyPlot1(note)
-            pyPlot2(note)
-            #render/display the html page home.html with user set to current_user, 
-            #   must be in folder named templates to find it with this function,
-            #   can add any variables we want (in this case we created a 'user' variable) which we can then access in the 
-            #   hmtl file.
-            '''
+        #set up linear regression and ttest variables then call proper statistics functions
         linearRegression = False
         tTest = False
         if dataStructure == 'oneXOneY':
@@ -160,8 +136,10 @@ def home(): #when you hit route '/' (homepage) this function is called
             elif plotType == 'dotPlot':
                 tTest = dotPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxisTitle, stats)
 
+        #load html based on post method, will build plot with form data
         buildPlot = True
         return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot, linearRegression=linearRegression, tTest=tTest)
+    #load htmkl based on a request method, no plot should apper on page
     buildPlot = False
     return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
 
@@ -187,9 +165,6 @@ def upload():
                     newReader.append("EasyPlotElementJoiner".join(row))
                 dataString = "EasyPlotLineJoiner".join(newReader)
             os.remove('EasyPlots/static/' + uploaded_csv.filename)
-            # print(basename+ "\n")
-            # print(str(current_user.id) + "\n")
-            # print(dataString + "\n")
             dataName = UserData.query.filter_by(user_id=current_user.id, title=basename).first()
             if dataName:
                 #check if filenam already in db for user
@@ -199,17 +174,9 @@ def upload():
                 newData = UserData(title=basename, dataString=dataString, 
                             user_id=current_user.id) # we use hash function on the password to secure it
                 # add the user to database and update the database
-                # print(newData.title + "\n")
-                # print(newData.dataString + "\n")
-                # print(str(newData.user_id) + "\n")
                 db.session.add(newData)
                 db.session.commit()
-            # UsersData = UserData.query.all()
-            # for data in UsersData:
-            #     print("title: " + data.title)
-            #     print("dataString: " + data.dataString)
-            #     print("user_id: " + str(data.user_id))
-
+            
             return redirect(url_for('views.plotTemplate', user=current_user))
     
     return render_template("upload.html", user=current_user)
@@ -244,8 +211,3 @@ def plotTemplate():
             db.session.commit()
     allUserData = UserData.query.filter_by(user_id=current_user.id).all()
     return render_template("plotTemplate.html", user=current_user, allUserData=allUserData)
-
-    
-@views.route('/pyPlot')
-def pyPlot():
-    return render_template("pyPlot.html") #render/display the html page pyPlot.html, must be in folder named templates to find it with this function
