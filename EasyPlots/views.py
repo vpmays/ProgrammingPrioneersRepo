@@ -8,10 +8,12 @@ import os
 from .models import User
 from .models import UserData
 import csv
+from pathlib import Path
 
 views = Blueprint('views', __name__) # intialize Blueprint("nmae of blueprint", __name__) and store it as "views" object
 plotTitle = '' #put this out here so I could access it in the pyPlot route
 data = []
+THIS_FOLDER = Path(__file__).parent.resolve()
 
 
 # @ is how you define a view/route. format is @nameOfBlueprint.route("url to get to this endpoint", methods = [the methods you will alow])
@@ -153,18 +155,18 @@ def upload():
         uploaded_csv = request.files['file']
         #check if a csv was submitted
         if uploaded_csv.filename != '':
-            uploaded_csv.save('EasyPlots/static/' + uploaded_csv.filename)
+            uploaded_csv.save(THIS_FOLDER / uploaded_csv.filename)
             basename = uploaded_csv.filename[:-4]
 
             #get data from uploaded csv then delete csv
             dataString = ""
-            with open('EasyPlots/static/' + uploaded_csv.filename) as csvfile:
+            with open(THIS_FOLDER / uploaded_csv.filename) as csvfile:
                 reader = csv.reader(csvfile)
                 newReader = []
                 for row in reader:
                     newReader.append("EasyPlotElementJoiner".join(row))
                 dataString = "EasyPlotLineJoiner".join(newReader)
-            os.remove('EasyPlots/static/' + uploaded_csv.filename)
+            os.remove(THIS_FOLDER / uploaded_csv.filename)
             dataName = UserData.query.filter_by(user_id=current_user.id, title=basename).first()
             if dataName:
                 #check if filenam already in db for user

@@ -71,7 +71,7 @@ def signUp():
             # create user if all tests pass
             # use User class in 'models.py'
             new_user = User(username=username, email=email, 
-                            password=generate_password_hash(password1, method='pbkdf2')) # we use hash function on the password to secure it
+                            password=generate_password_hash(password1, method='pbkdf2:sha1')) # pbkdf2 we use hash function on the password to secure it
             # add the user to database and update the database
             db.session.add(new_user)
             db.session.commit()

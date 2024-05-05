@@ -134,9 +134,11 @@
     {% endif %}
     {% if tTest %}
         {% if tTest[1] == "wilcoxon" %}
-            <p id="text" style="font-size:25px; ">Wilcoxon Test p-value = {{ tTest[0].pvalue }}</p>
+            <h2 id="text">Wilcoxon Test Results:</h2>
+            <p id="text" style="font-size:25px; ">p-value = {{ tTest[0].pvalue }}</p>
         {% elif tTest[1] == "tTest" %}
-            <p id="text" style="font-size:25px; ">ttest p-value = {{ tTest[0].pvalue }}</p>
+            <h2 id="text">ttest Results:</h2>
+            <p id="text" style="font-size:25px; ">p-value = {{ tTest[0].pvalue }}</p>
         {% endif %}
     {% endif %}
     <br/>

@@ -3,8 +3,9 @@ from jinja2 import Template
 from matplotlib import pyplot as plt 
 from scipy.stats import linregress, wilcoxon, ttest_ind
 import numpy as np 
-import os
+from pathlib import Path
 
+THIS_FOLDER = Path(__file__).parent.resolve()
 
 def barPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
     
@@ -16,7 +17,7 @@ def barPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
     plt.ylabel(yaxisTitle)
     plt.title(plotTitle)
 
-    fig.savefig('EasyPlots/static/pyPlot.png', bbox_inches='tight')
+    fig.savefig(THIS_FOLDER / 'static/pyPlot.png', bbox_inches='tight')
 
 
 def linePlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
@@ -41,7 +42,7 @@ def linePlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
     plt.ylabel(yaxisTitle)
     plt.title(plotTitle)
 
-    fig.savefig('EasyPlots/static/pyPlot.png', bbox_inches='tight')
+    fig.savefig(THIS_FOLDER / 'static/pyPlot.png', bbox_inches='tight')
 
 
 def dotPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle, stats):
@@ -76,7 +77,7 @@ def dotPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle, stats):
     plt.ylabel(yaxisTitle)
     plt.title(plotTitle)
 
-    fig.savefig('EasyPlots/static/pyPlot.png', bbox_inches='tight')
+    fig.savefig(THIS_FOLDER / 'static/pyPlot.png', bbox_inches='tight')
     return linearRegress
 
 
@@ -109,7 +110,7 @@ def boxPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxis
     plt.ylabel(yaxisTitle)
     plt.title(plotTitle)
 
-    fig.savefig('EasyPlots/static/pyPlot.png', bbox_inches='tight')
+    fig.savefig(THIS_FOLDER / 'static/pyPlot.png', bbox_inches='tight')
     return [test, stats]
 
 
@@ -160,7 +161,7 @@ def dotPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxis
     plt.ylabel(yaxisTitle)
     plt.title(plotTitle)
 
-    fig.savefig('EasyPlots/static/pyPlot.png', bbox_inches='tight')
+    fig.savefig(THIS_FOLDER / 'static/pyPlot.png', bbox_inches='tight')
     return [test, stats]
 
 
@@ -211,7 +212,7 @@ def linePlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxi
     plt.ylabel(yaxisTitle)
     plt.title(plotTitle)
 
-    fig.savefig('EasyPlots/static/pyPlot.png', bbox_inches='tight')
+    fig.savefig(THIS_FOLDER / 'static/pyPlot.png', bbox_inches='tight')
     return [test, stats]
 
 def barPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxisTitle, stats):
@@ -249,5 +250,5 @@ def barPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxis
     plt.ylabel(yaxisTitle)
     plt.title(plotTitle)
 
-    fig.savefig('EasyPlots/static/pyPlot.png', bbox_inches='tight')
+    fig.savefig(THIS_FOLDER / 'static/pyPlot.png', bbox_inches='tight')
     return [test, stats]
