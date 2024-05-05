@@ -3,7 +3,33 @@
 {% block title%}
     EasyPlot
 {% endblock %}
-
+<!-- {% block js %} 
+    {% if isPostRequest %}
+        <script>
+            window.onload = function() {
+                // Get all <select> elements on the page
+                var selectElements = document.querySelectorAll("select");
+            
+                // Loop through each <select> element
+                selectElements.forEach(function(selectElement) {
+                    // Retrieve the selected option from local storage
+                    var selectedOption = localStorage.getItem(selectElement.id);
+                
+                    // Set the selected option if it exists
+                    if (selectedOption) {
+                        selectElement.value = selectedOption;
+                    }
+                
+                    // Add onchange event listener to the <select> element
+                    selectElement.addEventListener("change", function() {
+                        // Store the selected option in local storage
+                        localStorage.setItem(selectElement.id, selectElement.value);
+                    });
+                });
+            };
+        </script>
+    {% endif %}
+{% endblock %} -->
 {% block content %}
     <h1 align="center">EasyPlot</h1>
 <!--
@@ -64,6 +90,28 @@
         <textarea name="yaxisTitle" id="yaxisTitle" class="form-control" placeholder="My y-axis Title."></textarea>
         <!-- <textarea name="note" id="note" class="form-control" placeholder="Enter note here."></textarea> -->
         <br/>
+        <label for="stats">Select statistics option:</label><br>
+        <select name="stats" id="stats" class="form-control">
+            <option value = "noStats">None</option>
+            <option value = "linearRegress">Linear Regression (can only be used if each x variable is numeric and has only one numeric y value, and Dot Plot is selected)</option>
+            <option value = "tTest">two-sided ttest (can only be used if each x variable has more than one y value, compares means)</option>
+            <option value = "wilcoxon">two-sided Wilcoxon Test (can only be used if each x variable has more than one y value, compares medians)</option>
+        </select>
+        <br/>
+        <label for="tTestSelection1">If you selected ttest or wilcoxon test, which two would you like to compare:</label><br>
+        <select name="tTestSelection1" id="tTestSelection1" class="form-control">
+            {% for element in userData[0] %}
+                <option value = "{{userData[0].index(element)}}">{{element}}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <select name="tTestSelection2" id="tTestSelection2" class="form-control">
+            {% for element in userData[0] %}
+                <option value = "{{userData[0].index(element)}}">{{element}}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <br/>
         <div align="center" >
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
@@ -73,6 +121,24 @@
     {% if buildPlot %}
         <center><img src="{{url_for('static', filename= 'pyPlot.png')}}" height = "600" width = "800"/></center>
         <!-- <center><iframe src="{{url_for('views.pyPlot')}}" height = "500" width = "700"></iframe></center> -->
+    {% endif %}
+    <br/>
+    <br/>
+    {% if linearRegression %}
+        <h2 id="text">Linear Regress Results:</h2>
+        <p id="text" style="font-size:25px; ">slope = {{ linearRegression.slope }}</p>
+        <p id="text" style="font-size:25px; ">intercept = {{ linearRegression.intercept }}</p>
+        <p id="text" style="font-size:25px; ">r-value = {{ linearRegression.rvalue }}</p>
+        <p id="text" style="font-size:25px; ">p-value = {{ linearRegression.pvalue }}</p>
+        <p id="text" style="font-size:25px; ">std error = {{ linearRegression.stderr }}</p>
+        <p id="text" style="font-size:25px; ">intercept std error = {{ linearRegression.intercept_stderr }}</p>
+    {% endif %}
+    {% if tTest %}
+        {% if tTest[1] == "wilcoxon" %}
+            <p id="text" style="font-size:25px; ">Wilcoxon Test p-value = {{ tTest[0].pvalue }}</p>
+        {% elif tTest[1] == "tTest" %}
+            <p id="text" style="font-size:25px; ">ttest p-value = {{ tTest[0].pvalue }}</p>
+        {% endif %}
     {% endif %}
     <br/>
     <br/>

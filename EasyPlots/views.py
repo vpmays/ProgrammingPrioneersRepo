@@ -19,8 +19,10 @@ data = []
 @login_required #require the user to be logged in to get to this page
 #this function will run when we go into our home (index page) of our webapp
 def home(): #when you hit route '/' (homepage) this function is called
+    isPostRequest = False
     #if method is 'POST' when you hit the home page, get the note and check it, then store it in db
     if request.method == 'POST':
+        isPostRequest = True
         #get data
         #xdata = request.form.get('xdata').split(',') #data comes back as string for now, so need ot split it by ','
         #ydata_1 = request.form.get('ydata').split(',') #data comes back as string for now, so need ot split it by ','
@@ -28,16 +30,53 @@ def home(): #when you hit route '/' (homepage) this function is called
         plotType = request.form.get('plotType')
         xdata_index = int(request.form.get('xdata1')) #data comes back as string for now, so need ot 
         ydata_index = int(request.form.get('ydata1')) #data comes back as string for now, so need ot 
+        stats = request.form.get('stats')
         xdata = []
         ydata = []
-        for row in data[1:]:
-            xdata.append(row[xdata_index])
-            try:
-                ydata.append(float(row[ydata_index]))
-            except:
-                flash('y values must be real numbers.', category='error')
+        if (dataStructure == 'oneXOneY' and stats == 'linearRegress'):
+            i = 0
+            for row in data[1:]:
+                try:
+                    xdata.append(float(row[xdata_index]))
+                    ydata.append(float(row[ydata_index]))
+                except:
+                    flash('For linear regression x and y values must be real numbers.', category='error')
+                    buildPlot = False
+                    return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+                i += 1
+            if i < 2:
+                flash('You must have at least two values for each variable in linear regression.', category='error')
                 buildPlot = False
-                return render_template("home.html", user=current_user, userData=data, buildPlot=buildPlot)
+                return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+
+        elif (dataStructure == 'oneXOneY' and stats != 'linearRegress'):
+            for row in data[1:]:
+                xdata.append(row[xdata_index])
+                try:
+                    ydata.append(float(row[ydata_index]))
+                except:
+                    flash('y values must be real numbers.', category='error')
+                    buildPlot = False
+                    return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+                
+            # if (stats == 'linearRegress'):
+            #     flash('You must select "Each x variable has more than one numerical y value" for linear regression.', category='error')
+            #     buildPlot = False
+            #     return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+        else:
+            i = 1
+            for row in data[1:]:
+                j = 0
+                for elem in row:
+                    try:
+                        data[i][j] = float(elem)
+                    except:
+                        flash('All variable values in your dataset must be real numbers.', category='error')
+                        buildPlot = False
+                        return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+                    j += 1
+                i += 1
+
         
         #convert numbers in string for y-axis to float values
         # ydata = []
@@ -47,7 +86,37 @@ def home(): #when you hit route '/' (homepage) this function is called
         plotTitle = request.form.get('plotTitle')
         xaxisTitle = request.form.get('xaxisTitle')
         yaxisTitle = request.form.get('yaxisTitle')
-        ''''
+
+        tTestSelection1_index = int(request.form.get('tTestSelection1'))
+        tTestSelection2_index = int(request.form.get('tTestSelection2'))
+        if (tTestSelection2_index == tTestSelection1_index) and (stats == "wilcoxon" or stats == "tTest"):
+            flash('You must compare two different variables.', category='error')
+            buildPlot = False
+            return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+        tTestSelection1 = []
+        tTestSelection2 = []
+        for row in data[1:]:
+            if (stats == "wilcoxon" or stats == "tTest"):
+                try:
+                    tTestSelection1.append(float(row[tTestSelection1_index]))
+                    tTestSelection2.append(float(row[tTestSelection2_index]))
+                except:
+                    flash('Variables for stats tests must be real numbers.', category='error')
+                    buildPlot = False
+                    return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+        if (stats == 'linearRegress'):
+            if (plotType != "dotPlot"):
+                flash('You must use dot plot for linear regression.', category='error')
+                buildPlot = False
+                return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+        elif (stats != 'noStats'):
+            if (dataStructure != 'oneXManyY'):
+                flash('You must have multiple numeric y values for each x variable to perform ttest or wilcoxon test.', category='error')
+                buildPlot = False
+                return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
+
+        
+        '''
         note = request.form.get('note')
         if len(note) < 1:
             flash('Note must be at least 1 character.', category='error' )
@@ -68,27 +137,33 @@ def home(): #when you hit route '/' (homepage) this function is called
             #   can add any variables we want (in this case we created a 'user' variable) which we can then access in the 
             #   hmtl file.
             '''
+        linearRegression = False
+        tTest = False
         if dataStructure == 'oneXOneY':
             if plotType == 'barPlot':
                 barPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle)
             elif plotType == 'linePlot':
                 linePlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle)
             elif plotType == 'dotPlot':
-                dotPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle)
+                linearRegression = dotPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle, stats)
+            elif plotType == 'boxPlot':
+                flash('The structure of your data must be "Each x variable has more than one y value.', category='error')
+                buildPlot = False
+                return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
         else:
             if plotType == 'boxPlot':
-                boxPlot(data, plotTitle, xaxisTitle, yaxisTitle)
+                tTest = boxPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxisTitle, stats)
             elif plotType == 'barPlot':
-                barPlot(data, plotTitle, xaxisTitle, yaxisTitle)
+                tTest = barPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxisTitle, stats)
             elif plotType == 'linePlot':
-                linePlot(data, plotTitle, xaxisTitle, yaxisTitle)
+                tTest = linePlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxisTitle, stats)
             elif plotType == 'dotPlot':
-                dotPlot(data, plotTitle, xaxisTitle, yaxisTitle)
+                tTest = dotPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxisTitle, stats)
 
         buildPlot = True
-        return render_template("home.html", user=current_user, userData=data, buildPlot=buildPlot)
+        return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot, linearRegression=linearRegression, tTest=tTest)
     buildPlot = False
-    return render_template("home.html", user=current_user, userData=data, buildPlot=buildPlot)
+    return render_template("home.html", user=current_user, userData=data, isPostRequest=isPostRequest, buildPlot=buildPlot)
 
 @views.route('/upload', methods=['GET', 'POST']) #defining upload page with route '/upload', we need to allow GET and POST methods on this page
 @login_required #require the user to be logged in to get to this page
@@ -100,18 +175,18 @@ def upload():
         uploaded_csv = request.files['file']
         #check if a csv was submitted
         if uploaded_csv.filename != '':
-            uploaded_csv.save('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/' + uploaded_csv.filename)
+            uploaded_csv.save('EasyPlots/static/' + uploaded_csv.filename)
             basename = uploaded_csv.filename[:-4]
 
             #get data from uploaded csv then delete csv
             dataString = ""
-            with open('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/' + uploaded_csv.filename) as csvfile:
+            with open('EasyPlots/static/' + uploaded_csv.filename) as csvfile:
                 reader = csv.reader(csvfile)
                 newReader = []
                 for row in reader:
                     newReader.append("EasyPlotElementJoiner".join(row))
                 dataString = "EasyPlotLineJoiner".join(newReader)
-            os.remove('FullSend_GitFolder_EasyPlotPrototype/EasyPlots/static/' + uploaded_csv.filename)
+            os.remove('EasyPlots/static/' + uploaded_csv.filename)
             # print(basename+ "\n")
             # print(str(current_user.id) + "\n")
             # print(dataString + "\n")
