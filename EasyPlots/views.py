@@ -155,6 +155,9 @@ def upload():
         uploaded_csv = request.files['file']
         #check if a csv was submitted
         if uploaded_csv.filename != '':
+            if ((len(uploaded_csv.filename) < 5) or (uploaded_csv.filename[-4:] != '.csv')):
+                flash('File type must be .csv and file name must be at least 1 character long.', category='error')
+                return render_template("upload.html", user=current_user)
             uploaded_csv.save(THIS_FOLDER / uploaded_csv.filename)
             basename = uploaded_csv.filename[:-4]
 
