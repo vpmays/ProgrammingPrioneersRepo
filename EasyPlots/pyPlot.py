@@ -23,16 +23,18 @@ def barPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
 def linePlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
     
     #check to see if x-data is numeric
+    xdataIsNumerical = True
     xdata_ = []
     i = 0
     for val in xdata: 
         try:
             xdata_.append(float(val))
         except:
-            ''
+            xdataIsNumerical = False
         i += 0
-    
-    xdata = xdata_
+
+    if (xdataIsNumerical):
+        xdata = xdata_
 
     #build plot
     fig = plt.figure()
@@ -48,16 +50,18 @@ def linePlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle):
 def dotPlot1(xdata, ydata, plotTitle, xaxisTitle, yaxisTitle, stats):
 
     #check to see if x-data is numeric
+    xdataIsNumerical = True
     xdata_ = []
     i = 0
     for val in xdata: 
         try:
             xdata_.append(float(val))
         except:
-            ''
+            xdataIsNumerical = False
         i += 0
-    
-    xdata = xdata_
+
+    if (xdataIsNumerical):
+        xdata = xdata_
 
     #create linear regression variable
     linearRegress = False
@@ -135,16 +139,18 @@ def dotPlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxis
     xdata = data[0]
 
     #check to see if x-data is numeric
+    xdataIsNumerical = True
     xdata_ = []
     i = 0
     for val in xdata: 
         try:
             xdata_.append(float(val))
         except:
-            ''
+            xdataIsNumerical = False
         i += 0
-    
-    xdata = xdata_
+
+    if (xdataIsNumerical):
+        xdata = xdata_
 
     #perform statistical test
     test = False
@@ -186,16 +192,18 @@ def linePlot(data, tTestSelection1, tTestSelection2, plotTitle, xaxisTitle, yaxi
     xdata = data[0]
 
     #check to see if x-data is numeric
+    xdataIsNumerical = True
     xdata_ = []
     i = 0
     for val in xdata: 
         try:
             xdata_.append(float(val))
         except:
-            ''
+            xdataIsNumerical = False
         i += 0
-    
-    xdata = xdata_
+
+    if (xdataIsNumerical):
+        xdata = xdata_
 
     #perform statistical test
     test = False
